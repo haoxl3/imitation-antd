@@ -14,6 +14,7 @@ export interface MenuProps {
 interface IMenuContext {
     index: number;
     onSelect?: SelectCallback;
+    mode?: MenuMode;
 }
 // index将从父组件传给子组件，指默认显示哪个菜单
 export const MenuContext = createContext<IMenuContext>({index: 0});
@@ -22,9 +23,10 @@ const Menu: React.FC<MenuProps> = (props) => {
     // useState来将变化的菜单索引传给子组件
     const [currentActive, setActive] = useState(defaultIndex);
     const classes = classNames('viking-menu', className, {
-        'menu-vertical': mode === 'vertical'
+        'menu-vertical': mode === 'vertical',
+        'menu-horizontal': mode !== 'vertical'
     });
-    // 选中菜单的回调函数
+    // 点击选中菜单的回调函数
     const handleClick = (index: number) => {
         setActive(index);
         if (onSelect) {
@@ -34,7 +36,8 @@ const Menu: React.FC<MenuProps> = (props) => {
     // 将被点击的菜单索引值及回调函数传给子组件
     const passedContext: IMenuContext = {
         index: currentActive ? currentActive : 0,
-        onSelect: handleClick
+        onSelect: handleClick,
+        mode: mode // 根据传入的mode来判断鼠标点击或hover时显示子菜单
     }
     // 确保子组件中只可渲染menuItem
     const renderChildren = () => {
@@ -43,7 +46,7 @@ const Menu: React.FC<MenuProps> = (props) => {
             const childElement = child as React.FunctionComponentElement<MenuItemProps>;
             // .type存放了组件所有的静态属性
             const {displayName} = childElement.type;
-            if (displayName === 'MenuItem') {
+            if (displayName === 'MenuItem' || displayName === 'SubMenu') {
                 return React.cloneElement(childElement, {
                     index
                 })

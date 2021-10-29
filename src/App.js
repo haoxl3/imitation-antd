@@ -3,16 +3,20 @@ import './styles/index.scss';
 import Button, {ButtonType, ButtonSize} from './components/Button/button.tsx';
 import Menu from './components/Menu/menu';
 import MenuItem from './components/Menu/menuItem';
+import SubMenu from './components/Menu/subMenu';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Menu defaultIndex={0} onSelect={(index)=>alert(index)}>
+        <Menu defaultIndex={0} onSelect={(index)=>alert(index)} mode="vertical">
           <MenuItem>link1</MenuItem>
           <MenuItem disabled>link2</MenuItem>
+          <SubMenu title="dropdown">
+            <MenuItem>dropdown</MenuItem>
+            <MenuItem>dropdown2</MenuItem>
+          </SubMenu>
           <MenuItem>link3</MenuItem>
-          <li>hello</li>
         </Menu>
         <Button disabled>hello</Button>
         <Button autoFocus>hello</Button>
