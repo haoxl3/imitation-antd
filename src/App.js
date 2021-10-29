@@ -9,9 +9,10 @@ function App() {
     <div className="App">
       <header className="App-header">
         <Menu defaultIndex={0} onSelect={(index)=>alert(index)}>
-          <MenuItem index={0}>link1</MenuItem>
-          <MenuItem index={1} disabled>link2</MenuItem>
-          <MenuItem index={2}>link3</MenuItem>
+          <MenuItem>link1</MenuItem>
+          <MenuItem disabled>link2</MenuItem>
+          <MenuItem>link3</MenuItem>
+          <li>hello</li>
         </Menu>
         <Button disabled>hello</Button>
         <Button autoFocus>hello</Button>

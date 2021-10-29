@@ -1,5 +1,6 @@
 import React, {createContext, useState} from 'react';
 import classNames from 'classnames';
+import {MenuItemProps} from './menuItem';
 
 type MenuMode = 'horizontal' | 'vertical';
 type SelectCallback = (selectedIndex: number) => void;
@@ -35,10 +36,26 @@ const Menu: React.FC<MenuProps> = (props) => {
         index: currentActive ? currentActive : 0,
         onSelect: handleClick
     }
+    // 确保子组件中只可渲染menuItem
+    const renderChildren = () => {
+        // React.Children.map react提供的方法，对非数组的不报错
+        return React.Children.map(children, (child, index) => {
+            const childElement = child as React.FunctionComponentElement<MenuItemProps>;
+            // .type存放了组件所有的静态属性
+            const {displayName} = childElement.type;
+            if (displayName === 'MenuItem') {
+                return React.cloneElement(childElement, {
+                    index
+                })
+            } else {
+                console.error('Warning: Menu has a child which is not a MenuItem component');
+            }
+        });
+    }
     return (
         <ul className={classes} style={style}>
             <MenuContext.Provider value={passedContext}>
-                {children}
+                {renderChildren()}
             </MenuContext.Provider>
         </ul>
     );
