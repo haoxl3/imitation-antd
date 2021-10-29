@@ -4,15 +4,18 @@ import { MenuContext } from './menu';
 import {MenuItemProps} from './menuItem'
 
 export interface SubMenuProps {
-    index?: number;
+    index?: string;
     title: string;
     className?: string;
 }
 
 const SubMenu: React.FC<SubMenuProps> = ({index, title, children, className}) => {
-    // 设置子菜单的展开或隐藏
-    const [menuOpen, setOpen] = useState(false);
     const context = useContext(MenuContext);
+    // 获取父组件传来默认要打开的子组件，只在垂直模式使用
+    const openedSubMenus = context.defaultOpenSubMenus as Array<string>;
+    const isOpend = (index && context.mode === 'vertical') ? openedSubMenus.includes(index) : false;
+    // 设置子菜单的展开或隐藏
+    const [menuOpen, setOpen] = useState(isOpend);
     const classes = classNames('menu-item submenu-item', className, {
         'is-active': context.index === index
     });
@@ -44,10 +47,12 @@ const SubMenu: React.FC<SubMenuProps> = ({index, title, children, className}) =>
             'menu-opened': menuOpen
         });
         // 设置渲染的子组件里只能有MenuItem
-        const childrenComponent = React.Children.map(children, (child, index) => {
+        const childrenComponent = React.Children.map(children, (child, i) => {
             const childElement = child as FunctionComponentElement<MenuItemProps>;
             if (childElement.type.displayName === 'MenuItem') {
-                return childElement;
+                return React.cloneElement(childElement, {
+                    index: `${index}-${i}`
+                });
             } else {
                 console.error('Warning: Menu has a child which is not a MenuItem component');
             }
