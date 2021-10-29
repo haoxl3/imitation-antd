@@ -1,11 +1,18 @@
 import './App.css';
 import './styles/index.scss';
 import Button, {ButtonType, ButtonSize} from './components/Button/button.tsx';
+import Menu from './components/Menu/menu';
+import MenuItem from './components/Menu/menuItem';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <Menu defaultIndex={0}>
+          <MenuItem>link1</MenuItem>
+          <MenuItem>link2</MenuItem>
+          <MenuItem>link3</MenuItem>
+        </Menu>
         <Button disabled>hello</Button>
         <Button autoFocus>hello</Button>
         <Button onClick={e => {e.preventDefault();alert(1)}}>hello</Button>
