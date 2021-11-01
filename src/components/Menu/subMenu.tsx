@@ -2,6 +2,7 @@ import React, {FunctionComponentElement, useState, useContext} from 'react';
 import classNames from 'classnames';
 import { MenuContext } from './menu';
 import {MenuItemProps} from './menuItem'
+import Icon from '../Icon/icon';
 
 export interface SubMenuProps {
     index?: string;
@@ -17,7 +18,9 @@ const SubMenu: React.FC<SubMenuProps> = ({index, title, children, className}) =>
     // 设置子菜单的展开或隐藏
     const [menuOpen, setOpen] = useState(isOpend);
     const classes = classNames('menu-item submenu-item', className, {
-        'is-active': context.index === index
+        'is-active': context.index === index,
+        'is-opened': menuOpen,
+        'is-vertical': context.mode === 'vertical'
     });
     // 点击菜单后显示子菜单
     const handleClick = (e: React.MouseEvent) => {
@@ -63,7 +66,10 @@ const SubMenu: React.FC<SubMenuProps> = ({index, title, children, className}) =>
     }
     return (
         <li key={index} className={classes} {...hoverEvents}>
-            <div className="submenu-title" {...clickEvents}>{title}</div>
+            <div className="submenu-title" {...clickEvents}>
+                {title}
+                <Icon icon="angle-down" className="arrow-icon"/>
+            </div>
             {renderChildren()}
         </li>
     )
