@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import './App.css';
 import './styles/index.scss';
 import {library} from '@fortawesome/fontawesome-svg-core';
@@ -7,9 +8,11 @@ import Menu from './components/Menu/menu';
 import MenuItem from './components/Menu/menuItem';
 import SubMenu from './components/Menu/subMenu';
 import Icon from './components/Icon/icon';
+import Transition from './components/Transition/transition';
 library.add(fas);
 
 function App() {
+	const [show, setShow] = useState(false);
     return (
         <div className="App">
           <header className="App-header">
@@ -30,17 +33,34 @@ function App() {
             <Button btnType={ButtonType.Danger} size={ButtonSize.Small}>Small Danger</Button>
             <Button btnType={ButtonType.Link} href="http://www.baidu.com" target="_black">baidu</Button>
             <Button btnType={ButtonType.Link} href="http://www.baidu.com" disabled>hello</Button>
-            <p>
-              Edit <code>src/App.js</code> and save to reload.
-            </p>
-            <a
-              className="App-link"
-              href="https://reactjs.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn React
-            </a>
+            <Button size="lg" onClick={() => {setShow(!show)}}>toggle</Button>
+			<Transition
+				in={show}
+				timeout={300}
+				animation="zoom-in-left"
+			>
+				<div>
+					<p>
+					Edit <code>src/App.js</code> and save to reload.
+					</p>
+					<a
+					className="App-link"
+					href="https://reactjs.org"
+					target="_blank"
+					rel="noopener noreferrer"
+					>
+					Learn React
+					</a>
+				</div>
+			</Transition>
+			<Transition
+				in={show}
+				timeout={300}
+				animation="zoom-in-left"
+				wrapper
+			>
+				<Button btnType="primary" size="lg">lg</Button>
+			</Transition>
           </header>
         </div>
     );
