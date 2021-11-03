@@ -1,4 +1,6 @@
-import React from 'react';
+
+// storybook中的react-docgen-typescript-loader自动生成文档要求将react中方法用{}引入，否则将不会根据代码自动生成文档
+import React, {FC, ButtonHTMLAttributes, AnchorHTMLAttributes} from 'react';
 import classNames from 'classnames';
 
 export enum ButtonSize {
@@ -22,11 +24,18 @@ interface BaseButtonProps {
     href?: string;
 }
 // 交叉类型,将button原生属性、a链接的属性、传入的属性相结合
-type NativeButtonProps = BaseButtonProps & React.ButtonHTMLAttributes<HTMLElement>;
-type AnchorButtonProps = BaseButtonProps & React.AnchorHTMLAttributes<HTMLElement>;
+type NativeButtonProps = BaseButtonProps & ButtonHTMLAttributes<HTMLElement>;
+type AnchorButtonProps = BaseButtonProps & AnchorHTMLAttributes<HTMLElement>;
 // Partial代表属性可选
 export type ButtonProps = Partial<NativeButtonProps & AnchorButtonProps>;
-const Button: React.FC<ButtonProps> = (props) => {
+/**
+ * 页面按钮
+ *  ### 引用方法
+ * ~~~js
+ * import {Button} from 'imitation-antd'
+ * ~~~
+ */
+export const Button: FC<ButtonProps> = (props) => {
     const {btnType, className, disabled, size, children, href, ...restProps} = props;
     const classes = classNames('btn', className, {
         [`btn-${btnType}`]: btnType,

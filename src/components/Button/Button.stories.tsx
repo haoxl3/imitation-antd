@@ -26,6 +26,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
+import {withInfo} from '@storybook/addon-info'
 
 import Button from './button'
 
@@ -53,7 +54,13 @@ const buttonWithType = () => (
   </>
 )
 storiesOf('Button Component', module)
-  .addDecorator(CenterDecorator)
+  // .addDecorator(CenterDecorator)
+  .addDecorator(withInfo) // 自动显示文档
+  .addParameters({ // 文档的信息，支持markdown
+    info: {
+		  inline: true
+    }
+  })
   .add('Button', defaultButton)
   .add('不同尺寸的 Button', buttonWithSize)
   .add('不同类型的 Button', buttonWithType)
