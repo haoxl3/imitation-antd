@@ -29,10 +29,10 @@ function App() {
             <Button disabled>hello</Button>
             <Button autoFocus>hello</Button>
             <Button onClick={e => {e.preventDefault();alert(1)}}>hello</Button>
-            <Button btnType={ButtonType.Primary} size={ButtonSize.Large}>Large Primary</Button>
-            <Button btnType={ButtonType.Danger} size={ButtonSize.Small}>Small Danger</Button>
-            <Button btnType={ButtonType.Link} href="http://www.baidu.com" target="_black">baidu</Button>
-            <Button btnType={ButtonType.Link} href="http://www.baidu.com" disabled>hello</Button>
+            <Button btnType='primary' size='lg'>Large Primary</Button>
+            <Button btnType='danger' size="sm">Small Danger</Button>
+            <Button btnType='link' href="http://www.baidu.com" target="_black">baidu</Button>
+            <Button btnType='link' href="http://www.baidu.com" disabled>hello</Button>
             <Button size="lg" onClick={() => {setShow(!show)}}>toggle</Button>
 			<Transition
 				in={show}
