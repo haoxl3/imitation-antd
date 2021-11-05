@@ -1,5 +1,7 @@
-import React, {FC, useState, ChangeEvent, ReactElement} from 'react';
+import React, {FC, useState, ChangeEvent, ReactElement, useEffect} from 'react';
 import Input, {InputProps} from '../Input/input';
+import Icon from '../Icon/icon';
+import useDebounce from '../../hooks/useDebounce';
 
 // 定义传的option默认有value属性
 interface DataSourceObject {
@@ -16,15 +18,19 @@ export interface AutoCompleteProps extends Omit<InputProps, 'onSelect'> {
 
 export const AutoComplete: FC<AutoCompleteProps> = (props) => {
     const {fetchSuggestions, onSelect, value, renderOption, ...restProps} = props;
-    const [inputValue, setInputValue] = useState(value);
+    const [inputValue, setInputValue] = useState(value as string);
     const [suggestions, setSuggestions] = useState<DataSourceType[]>([]);
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.trim();
-        setInputValue(value);
-        if (value) {
-            const results = fetchSuggestions(value);
+    const [loading, setLoading] = useState(false);
+    const debouncedValue = useDebounce(inputValue, 500);
+
+    // 当input的值有变化时去异步请求
+    useEffect(() => {
+        if (debouncedValue) {
+            const results = fetchSuggestions(debouncedValue);
             if (results instanceof Promise) {
+                setLoading(true);
                 results.then(data => {
+                    // setLoading(false);
                     setSuggestions(data);
                 });
             } else {
@@ -33,6 +39,11 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
         } else {
             setSuggestions([]);
         }
+    }, [debouncedValue])
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.trim();
+        setInputValue(value);
     }
     
     const handleSelect = (item: DataSourceType) => {
@@ -63,6 +74,7 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
                 onChange={handleChange}
                 {...restProps}
             />
+            {loading && <ul><Icon icon='spinner' spin/></ul>}
             {(suggestions.length > 0) && generateDropdown()}
         </div>
     )
