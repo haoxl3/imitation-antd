@@ -1,8 +1,9 @@
-import React, {FC, useState, ChangeEvent, ReactElement, useEffect, KeyboardEvent} from 'react';
+import React, {FC, useState, ChangeEvent, ReactElement, useEffect, KeyboardEvent, useRef} from 'react';
 import classNames from 'classnames';
 import Input, {InputProps} from '../Input/input';
 import Icon from '../Icon/icon';
 import useDebounce from '../../hooks/useDebounce';
+import useClickOutside from '../../hooks/useClickOutside';
 
 // 定义传的option默认有value属性
 interface DataSourceObject {
@@ -23,11 +24,14 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
     const [suggestions, setSuggestions] = useState<DataSourceType[]>([]);
     const [loading, setLoading] = useState(false);
     const [highlightIndex, sethighlightIndex] = useState(-1);
+    const triggerSearch = useRef(false); // 记录搜索框是否是填写的内容，以此限制按回车键时不用再搜索
+    const componentRef = useRef<HTMLDivElement>(null); // 点击页面非select框时让其收起,因为input最外层是div
     const debouncedValue = useDebounce(inputValue, 500);
+    useClickOutside(componentRef, () => {setSuggestions([])}); // 点面页面空白处关闭select
 
     // 当input的值有变化时去异步请求
     useEffect(() => {
-        if (debouncedValue) {
+        if (debouncedValue && triggerSearch.current) {
             const results = fetchSuggestions(debouncedValue);
             if (results instanceof Promise) {
                 setLoading(true);
@@ -76,6 +80,7 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.trim();
         setInputValue(value);
+        triggerSearch.current = true;
     }
     
     const handleSelect = (item: DataSourceType) => {
@@ -84,6 +89,7 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
         if (onSelect) {
             onSelect(item);
         }
+        triggerSearch.current = false;
     }
     const renderTemplate = (item: DataSourceType) => {
         return renderOption ? renderOption(item) : item.value;
@@ -103,7 +109,7 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
         )
     }
     return (
-        <div className="viking-auto-complete">
+        <div className="viking-auto-complete" ref={componentRef}>
             <Input
                 value={inputValue}
                 onChange={handleChange}
