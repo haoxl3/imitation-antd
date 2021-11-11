@@ -1,5 +1,6 @@
 import React, {ChangeEvent, FC, useRef, useState} from 'react';
 import axios from 'axios';
+import UploadList from './uploadList';
 import Button from '../Button/button';
 
 export type UploadFileStatus = 'ready' | 'uploading' | 'success' | 'error';
@@ -15,17 +16,22 @@ export interface UploadFile {
 }
 export interface UploadProps {
     action: string;
+    defaultFileList?: UploadFile[];
     beforeUpload?: (file: File) => boolean | Promise<File>;
     onProgress?: (percentage: number, file: File) => void;
     onSuccess?: (data: any, file: File) => void;
     onError?: (err: any, file: File) => void;
     onChange?: (file: File) => void;
+    onRemove?: (file: UploadFile) => void;
 }
 
 export const Upload: FC = (props) => {
-    const {action, onProgress, beforeUpload, onSuccess, onError, onChange} = props;
+    const {action, defaultFileList, onProgress,
+        beforeUpload, onSuccess, onError, onChange,
+        onRemove
+    } = props;
     // 保存文件数量，进度条要用
-    const [fileList, setFileList] = useState<UploadFile[]>([])
+    const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || [])
     const fileInput = useRef(null);
 
     const updateFileList = (updateFile: UploadFile, updateObj: Partial<UploadFile>) => {
@@ -52,6 +58,14 @@ export const Upload: FC = (props) => {
         uploadFiles(files);
         if (fileInput.current) {
             fileInput.current.value = '';
+        }
+    }
+    const handleRemove = (file: UploadFile) => {
+        setFileList(prevList => {
+            return prevList.filter(item => item.uid !== file.uid);
+        })
+        if (onRemove) {
+            onRemove(file);
         }
     }
     const uploadFiles = (files: FileList) => {
@@ -124,6 +138,10 @@ export const Upload: FC = (props) => {
                 ref={fileInput}
                 type="file"
                 onChange={handleFileChange}
+            />
+            <UploadList
+                fileList={fileList}
+                onRemove={handleRemove}
             />
         </div>
     );
