@@ -36,7 +36,7 @@ const SimpleUpload = () => {
       headers={{'X-Powered-By': 'vikingship'}}
       multiple
       accept=".jpg"
-      // drag
+      drag
     >
       <Icon icon="upload" size="5x" theme="secondary" />
       <br/>

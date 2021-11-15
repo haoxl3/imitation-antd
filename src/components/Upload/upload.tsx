@@ -2,6 +2,7 @@ import React, {ChangeEvent, FC, useRef, useState} from 'react';
 import axios from 'axios';
 import UploadList from './uploadList';
 import Button from '../Button/button';
+import Dragger from './dragger';
 
 export type UploadFileStatus = 'ready' | 'uploading' | 'success' | 'error';
 export interface UploadFile {
@@ -29,13 +30,14 @@ export interface UploadProps {
     withCredentials?: boolean;
     accept?: string;
     multiple?: boolean;
+    drag?: boolean;
 }
 
 export const Upload: FC = (props) => {
     const {action, defaultFileList, onProgress,
         beforeUpload, onSuccess, onError, onChange,
         onRemove, headers, name, data, withCredentials,
-        accept, multiple
+        accept, multiple, drag, children
     } = props;
     // 保存文件数量，进度条要用
     const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || [])
@@ -148,16 +150,27 @@ export const Upload: FC = (props) => {
     }
     return (
         <div className="viking-upload-component">
-            <Button btnType="primary" onClick={handleClick}>upload file</Button>
-            <input
-                className="viking-file-input"
-                style={{display: 'none'}}
-                ref={fileInput}
-                type="file"
-                accept={accept}
-                multiple={multiple}
-                onChange={handleFileChange}
-            />
+            {/* <Button btnType="primary" onClick={handleClick}>upload file</Button> */}
+            <div
+                className="viking-upload-input"
+                style={{display: 'inline-block'}}
+                onClick={handleClick}
+            >
+                {drag ?
+                    <Dragger onFile={files => {uploadFiles(files)}}>{children}</Dragger>
+                    :
+                    children
+                }
+                <input
+                    className="viking-file-input"
+                    style={{display: 'none'}}
+                    ref={fileInput}
+                    type="file"
+                    accept={accept}
+                    multiple={multiple}
+                    onChange={handleFileChange}
+                />
+            </div>
             <UploadList
                 fileList={fileList}
                 onRemove={handleRemove}
