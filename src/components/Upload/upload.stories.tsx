@@ -26,12 +26,16 @@ const SimpleUpload = () => {
       // action="https://jsonplaceholder.typeicode.com/posts/"
       action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
       onChange={action('changed')}
-      defaultFileList={defaultFileList}
+      onRemove={action('removed')}
+      // defaultFileList={defaultFileList}
       // beforeUpload={checkFileSize}
       // beforeUpload={filePromise}
       // onRemove={action('removed')}
-      // name="fileName"
-      // multiple
+      name="fileName"
+      data={{'key': 'value'}}
+      headers={{'X-Powered-By': 'vikingship'}}
+      multiple
+      accept=".jpg"
       // drag
     >
       <Icon icon="upload" size="5x" theme="secondary" />
